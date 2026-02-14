@@ -106,7 +106,7 @@ public class QuizManager {
         long interval = plugin.getConfig().getLong("interval", 300);
         nextRoundTime = System.currentTimeMillis() + (interval * 1000);
 
-        nextRoundTask = Bukkit.getScheduler().runTaskLater(plugin, () -> startQuiz(null, null), interval * 20L);
+        nextRoundTask = Bukkit.getScheduler().runTaskLater(plugin, () -> startQuiz(null, null), getAdaptedTicks(interval));
     }
 
     public void startQuiz(String forcedType, Integer customDuration) {
@@ -162,7 +162,7 @@ public class QuizManager {
                 if (secondsLeft <= 5) {
                     broadcastSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.2f + 0.1f*(5-secondsLeft));
                 }
-            }, 20L, 20L);
+            }, getAdaptedTicks(1), getAdaptedTicks(1));
         }
         timeoutTask = Bukkit.getScheduler().runTaskLater(plugin, () -> {
             Component timeOutPrefix = Component.text("[问答挑战] ", NamedTextColor.GOLD);
@@ -171,7 +171,7 @@ public class QuizManager {
             Bukkit.broadcast(timeOutPrefix.append(msg));
             Bukkit.broadcast(timeOutPrefix.append(ansMsg));
             stopQuiz(null, false);
-        }, duration * 20L);
+        }, getAdaptedTicks(duration));
     }
 
     private void prepareQuestion(String type) {
@@ -387,5 +387,13 @@ public class QuizManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getLocation(), sound, volume, pitch);
         }
+    }
+
+    private long getAdaptedTicks(long seconds) {
+        // TODO: Refactor main logic to adapt tasks to reality time, not game ticks
+        double tps = Bukkit.getTPS()[0];
+        // Prevent tps from overflow or underflow
+        double effectiveTps = Math.max(1.0, Math.min(20.0, tps));
+        return (long) (seconds * effectiveTps);
     }
 }
