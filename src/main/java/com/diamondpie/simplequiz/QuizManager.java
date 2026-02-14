@@ -106,10 +106,10 @@ public class QuizManager {
         long interval = plugin.getConfig().getLong("interval", 300);
         nextRoundTime = System.currentTimeMillis() + (interval * 1000);
 
-        nextRoundTask = Bukkit.getScheduler().runTaskLater(plugin, () -> startQuiz(null), interval * 20L);
+        nextRoundTask = Bukkit.getScheduler().runTaskLater(plugin, () -> startQuiz(null, null), interval * 20L);
     }
 
-    public void startQuiz(String forcedType) {
+    public void startQuiz(String forcedType, Integer customDuration) {
         if (isRunning) return;
 
         // Determine Type
@@ -131,7 +131,7 @@ public class QuizManager {
         broadcastSound(Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 1.2f);
 
         // Schedule Timeout
-        long duration = plugin.getConfig().getLong("duration", 30);
+        long duration = (customDuration != null) ? customDuration : plugin.getConfig().getLong("duration", 30);
 
         if (plugin.getConfig().getBoolean("show-bossbar")) {
             activeBossBar = BossBar.bossBar(

@@ -47,17 +47,38 @@ public class CommandSimpleQuiz implements CommandExecutor, TabCompleter {
                 sender.sendMessage(Component.text("配置已重载", NamedTextColor.GREEN));
                 break;
             case "start":
-                String type = null;
-                if (args.length > 1) {
-                    if (args[1].equalsIgnoreCase("text")) type = "text";
-                    if (args[1].equalsIgnoreCase("math")) type = "math";
-                }
                 if (plugin.getQuizManager().isQuizRunning()) {
                     sender.sendMessage(Component.text("当前已有问答正在进行中", NamedTextColor.RED));
-                } else {
-                    plugin.getQuizManager().startQuiz(type);
-                    sender.sendMessage(Component.text("已强制开始问答", NamedTextColor.GREEN));
+                    return true;
                 }
+
+                String type = null;
+                Integer customDuration = null;
+
+                if (args.length > 1) {
+                    String inputType = args[1].toLowerCase();
+                    if (inputType.equals("text") || inputType.equals("math")) {
+                        type = inputType;
+                    } else if (!inputType.equals("random")) {
+                        // 如果输入不是 text/math/random，可以给个提示
+                        sender.sendMessage(Component.text("未知类型: " + args[1] + " (可选: text, math, random)", NamedTextColor.RED));
+                        return true;
+                    }
+                }
+
+                if (args.length > 2) {
+                    try {
+                        customDuration = Integer.parseInt(args[2]);
+                        if (customDuration <= 0) throw new NumberFormatException();
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage(Component.text("持续时间必须是一个正整数！", NamedTextColor.RED));
+                        return true;
+                    }
+                }
+
+                plugin.getQuizManager().startQuiz(type, customDuration);
+                String durationMsg = (customDuration != null) ? " (持续 " + customDuration + " 秒)" : "";
+                sender.sendMessage(Component.text("已强制开始 " + (type == null ? "随机" : type) + " 问答" + durationMsg, NamedTextColor.GREEN));
                 break;
             case "encodehand":
                 if (!(sender instanceof Player player)) {
@@ -118,7 +139,11 @@ public class CommandSimpleQuiz implements CommandExecutor, TabCompleter {
             List<String> list = new ArrayList<>();
             list.add("text");
             list.add("math");
+            list.add("random");
             return filter(list, args[1]);
+        }
+        if (args.length == 3 && args[0].equalsIgnoreCase("start") && sender.hasPermission("simplequiz.admin")) {
+            return Collections.singletonList("[Duration...]");
         }
         return Collections.emptyList();
     }
