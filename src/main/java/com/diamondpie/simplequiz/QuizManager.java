@@ -300,9 +300,12 @@ public class QuizManager {
     }
 
     private void handleCorrectAnswer(Player winner) {
-        Component prefix = Component.text("[问答挑战] ", NamedTextColor.GOLD);
-        Component msg = Component.text(winner.getName() + " 回答正确", NamedTextColor.GREEN);
-        Bukkit.broadcast(prefix.append(msg));
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            // Delay for 1 tick so the message falls below player's answer
+            Component prefix = Component.text("[问答挑战] ", NamedTextColor.GOLD);
+            Component msg = Component.text(winner.getName() + " 回答正确！", NamedTextColor.GREEN);
+            Bukkit.broadcast(prefix.append(msg));
+        }, 1L);
 
         // 切换回主线程发放奖励
         Bukkit.getScheduler().runTask(plugin, () -> {
