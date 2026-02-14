@@ -52,6 +52,10 @@ math:
   number: # 运算数字允许的范围
     min: 1
     max: 50
+  easy-multiplier:
+    enable: true
+    min: 2
+    max: 9
 
 prize:
   item:

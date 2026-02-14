@@ -60,16 +60,12 @@ public class QuizListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         // Make sure getOnlinePlayers is updated
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            plugin.getQuizManager().checkPlayerCount();
-        }, 1L);
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.getQuizManager().checkPlayerCount(), 1L);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         // Make sure getOnlinePlayers is updated
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            plugin.getQuizManager().checkPlayerCount();
-        }, 1L);
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> plugin.getQuizManager().checkPlayerCount(), 1L);
     }
 }

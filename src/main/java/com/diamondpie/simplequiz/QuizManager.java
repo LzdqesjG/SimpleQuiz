@@ -229,15 +229,33 @@ public class QuizManager {
         int minNum = config.getInt("math.number.min", 0);
         int maxNum = config.getInt("math.number.max", 99);
 
+        // Easy multiplier logic configuration
+        boolean easyMultEnabled = config.getBoolean("math.easy-multiplier.enable", false);
+        int easyMin = config.getInt("math.easy-multiplier.min", 1);
+        int easyMax = config.getInt("math.easy-multiplier.max", 9);
+
         List<Integer> numbers = new ArrayList<>();
         List<String> operators = new ArrayList<>();
         String[] ops = {"+", "-", "*"};
 
-        for (int i = 0; i < countOp + 1; i++) {
-            numbers.add(ThreadLocalRandom.current().nextInt(minNum, maxNum + 1));
-        }
+        // First generate operators
         for (int i = 0; i < countOp; i++) {
             operators.add(ops[ThreadLocalRandom.current().nextInt(ops.length)]);
+        }
+
+        // Generate first number
+        numbers.add(ThreadLocalRandom.current().nextInt(minNum, maxNum + 1));
+        // Generate the rest of numbers
+        for (int i = 0; i < countOp; i++) {
+            String op = operators.get(i);
+            int num;
+            // If easy multiplier is enabled, force generate a small number
+            if (easyMultEnabled && op.equals("*")) {
+                num = ThreadLocalRandom.current().nextInt(easyMin, easyMax + 1);
+            } else {
+                num = ThreadLocalRandom.current().nextInt(minNum, maxNum + 1);
+            }
+            numbers.add(num);
         }
 
         // Build String
