@@ -5,7 +5,7 @@ interval: 300
 duration: 30
 
 # 玩家回答错误时是否给予单独提示回答错误，默认false
-notifyWrongAnswer: false
+notify-wrong-answer: false
 
 # 参与问答的最少在线人数，如果人数不足则暂停问答
 min-player: 5

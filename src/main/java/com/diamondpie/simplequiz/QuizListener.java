@@ -31,7 +31,7 @@ public class QuizListener implements Listener {
             e.setCancelled(true); // Don't show the correct answer in raw text to avoid clutter
         } else {
             // Wrong answer
-            if (plugin.getConfig().getBoolean("notifyWrongAnswer")) {
+            if (plugin.getConfig().getBoolean("notify-wrong-answer", false)) {
                 // To avoid spamming chat for everyone, we might just send a message to the player.
                 // However, standard chat event handles the broadcasting of the message itself.
                 // We just append a little hint only to the player?
