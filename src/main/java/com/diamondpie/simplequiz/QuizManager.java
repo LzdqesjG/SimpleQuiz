@@ -22,6 +22,7 @@ public class QuizManager {
 
     private final Set<String> currentAnswers = new HashSet<>();
     private String currentQuestionText = "";
+    private String currentJudgeHint = "";
 
     private BukkitTask timeoutTask;
     private BukkitTask nextRoundTask;
@@ -77,6 +78,8 @@ public class QuizManager {
         return isRunning;
     }
 
+    public String getJudgeHint() { return currentJudgeHint; }
+
     public boolean checkAnswer(Player player, String message) {
         if (!isRunning) return false;
 
@@ -123,7 +126,8 @@ public class QuizManager {
         Component prefix = Component.text("[问答挑战] ", NamedTextColor.GOLD);
         Component question = Component.text(currentQuestionText, NamedTextColor.YELLOW);
         Bukkit.broadcast(prefix.append(question));
-        Bukkit.broadcast(Component.text("请直接在公屏输入答案", NamedTextColor.GRAY));
+
+        Bukkit.broadcast(Component.text("请直接在公屏输入答案" + currentJudgeHint, NamedTextColor.GRAY));
         broadcastSound(Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 1.2f);
 
         // Schedule Timeout
@@ -172,6 +176,7 @@ public class QuizManager {
 
     private void prepareQuestion(String type) {
         currentAnswers.clear();
+        currentJudgeHint = ""; // Reset judge hint
         FileConfiguration config = plugin.getConfig();
 
         if ("math".equalsIgnoreCase(type)) {
@@ -197,8 +202,11 @@ public class QuizManager {
 
         if ("judge".equalsIgnoreCase(ansType)) {
             boolean boolVal = (Boolean) answerSection.get("value");
-            String key = boolVal ? "judge.ansYes" : "judge.ansNo";
-            currentAnswers.add(config.getString(key, boolVal ? "是" : "否"));
+            String keyYes = config.getString("judge.ansYes", "是");
+            String keyNo = config.getString("judge.ansNo", "否");
+            String key = boolVal ? keyYes : keyNo;
+            currentAnswers.add(key);
+            currentJudgeHint = " (" + keyYes + "/" + keyNo + ")";
         } else {
             Object valueObj = answerSection.get("value");
             if (valueObj instanceof List<?> rawList) {

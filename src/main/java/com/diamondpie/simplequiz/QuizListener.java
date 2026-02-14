@@ -19,13 +19,24 @@ public class QuizListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncChatEvent e) {
-        if (!plugin.getQuizManager().isQuizRunning()) return;
+        QuizManager quizManager = plugin.getQuizManager();
+        if (!quizManager.isQuizRunning()) return;
 
         String msg = PlainTextComponentSerializer.plainText().serialize(e.message());
 
         // Check logic needs to run properly regarding sync/async if modifying world state,
         // but QuizManager logic for rewards schedules tasks to main thread.
-        boolean correct = plugin.getQuizManager().checkAnswer(e.getPlayer(), msg);
+        boolean correct = quizManager.checkAnswer(e.getPlayer(), msg);
+
+        // If it is judge (and config said yes), hide both ansYes and ansNo
+        if (plugin.getConfig().getBoolean("hide-judge-answer", true) &&
+                !quizManager.getJudgeHint().isEmpty() &&
+                (msg.equals(plugin.getConfig().getString("judge.ansYes")) || msg.equals(plugin.getConfig().getString("judge.ansNo")))
+        ) {
+            e.getPlayer().sendMessage(Component.text("你正在回答一道判断题，你的回答不会显示在公屏！", NamedTextColor.GRAY));
+            e.setCancelled(true);
+            return;
+        }
 
         if (correct) {
             if (plugin.getConfig().getBoolean("hide-correct", false)) {
@@ -41,7 +52,7 @@ public class QuizListener implements Listener {
                 // If config true: "give separate hint".
                 // Since this is AsyncChatEvent, we shouldn't modify the event message for just one player easily without side effects.
                 // We send a separate message.
-                e.getPlayer().sendMessage(Component.text("回答错误", NamedTextColor.RED));
+                e.getPlayer().sendMessage(Component.text("很遗憾，回答错误", NamedTextColor.RED));
             }
         }
     }

@@ -20,6 +20,9 @@ show-bossbar: true
 # 如果设为 true，则该玩家的消息会被拦截，只有插件发的“xxx回答正确”提示
 hide-correct: false
 
+# 隐藏判断题时玩家回答的答案（仅隐藏 ansYes 和 ansNo 配置内容）
+hide-judge-answer: true
+
 # 是否禁用所有声音提示
 mute: false
 
