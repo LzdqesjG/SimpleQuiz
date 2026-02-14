@@ -60,7 +60,9 @@ math:
 prize:
   item:
     enable: true
-    # ItemStack的base64编码形式
+    # ItemStack 的 base64 编码形式
+    # 你可以在游戏中使用 /simplequiz encodehand 将手持物品 ItemStack 编码成 base64
+    # 堆叠数量将会忽略并给予下面的 amount 配置重新计算
     base64: ""
     # 若 base64 不为空则优先使用 base64，否则使用 id 构建基础物品
     id: "minecraft:diamond"
