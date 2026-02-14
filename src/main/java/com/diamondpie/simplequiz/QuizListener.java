@@ -28,7 +28,9 @@ public class QuizListener implements Listener {
         boolean correct = plugin.getQuizManager().checkAnswer(e.getPlayer(), msg);
 
         if (correct) {
-            e.setCancelled(true); // Don't show the correct answer in raw text to avoid clutter
+            if (plugin.getConfig().getBoolean("hide-correct", false)) {
+                e.setCancelled(true); // Don't show the correct answer in raw text to avoid clutter
+            }
         } else {
             // Wrong answer
             if (plugin.getConfig().getBoolean("notify-wrong-answer", false)) {

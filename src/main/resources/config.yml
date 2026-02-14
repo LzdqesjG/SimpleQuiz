@@ -16,6 +16,10 @@ broadcast-status: true
 # 是否显示倒计时 BossBar
 show-bossbar: true
 
+# 玩家回答正确后，是否隐藏该条聊天消息（默认 false，即不隐藏，全服都能看到该玩家回答了正确答案）
+# 如果设为 true，则该玩家的消息会被拦截，只有插件发的“xxx回答正确”提示
+hide-correct: false
+
 # 是否禁用所有声音提示
 mute: false
 
