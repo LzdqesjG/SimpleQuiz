@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 public final class Main extends JavaPlugin {
     private Economy econ = null;
     private QuizManager quizManager;
+    private DataManager dataManager;
     private static final Logger log = Logger.getLogger("SimpleQuiz");
 
     @Override
@@ -23,6 +24,7 @@ public final class Main extends JavaPlugin {
 
         // Initialize Manager
         this.quizManager = new QuizManager(this);
+        this.dataManager = new DataManager(this);
 
         // Register Commands
         Objects.requireNonNull(getCommand("simplequiz")).setExecutor(new CommandSimpleQuiz(this));
@@ -63,5 +65,8 @@ public final class Main extends JavaPlugin {
 
     public QuizManager getQuizManager() {
         return quizManager;
+    }
+    public DataManager getDataManager() {
+        return dataManager;
     }
 }
