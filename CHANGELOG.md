@@ -1,3 +1,3 @@
-# SimpleQuiz v2.2
+# SimpleQuiz v2.3
 
-- When player inventory is full, drop prize onto ground instead of disappearing
+- Add bans and unbans to admins to prevent cheat players from answering
